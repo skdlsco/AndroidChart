@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aaa"
+    android:orientation="vertical"
+    tools:context="eka.com.researchgraph.MainActivity">
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <eka.com.researchgraph.View.MyCustomView
+        android:id="@+id/myView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:padding="10dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <eka.com.researchgraph.View.BarChartView
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        app:barColor="#000"
+        app:barDistance="8dp"
+        app:barMaxHeight="80dp"
+        app:barRadius="10dp"
+        app:barWidth="30dp"
+        app:underLineColor="#000" />
+
+    <eka.com.researchgraph.View.PieChartView
+        android:id="@+id/pieChart"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:innerCircleColor="#aaa"
+        app:innerCircleRadius="35dp"
+        app:outerCircleRadius="75dp" />
+</LinearLayout>

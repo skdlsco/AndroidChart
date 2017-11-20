@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewPropertyAnimator
 import eka.com.researchgraph.R
@@ -44,6 +45,7 @@ class BarChartView : View {
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+
         startPoint = paddingStart + (barDistance / 2)
         setMaxOfValue()
 
@@ -51,6 +53,9 @@ class BarChartView : View {
 
         if (barMaxHeight == 0f)
             barMaxHeight = barBottomPoint - paddingTop * 2.5f
+
+        if (barRadius >= barWidth)
+            barRadius = barWidth
 
         val underLine = RectF(paddingStart.toFloat(), barBottomPoint, width.toFloat() - paddingEnd, barBottomPoint + underLineWidth)
         val underLinePaint = Paint()
@@ -65,10 +70,26 @@ class BarChartView : View {
 
             barPaint.style = Paint.Style.FILL
             barPaint.color = barColor
-            val barRect = RectF(startPoint, barBottomPoint - barHeight - underLineWidth,
-                    startPoint + barWidth, barBottomPoint + underLineWidth)
-            canvas.drawRoundRect(barRect, 0f, 0f, barPaint)
+            //draw Bar
+            val barRect = RectF(startPoint, barBottomPoint - barHeight + (barRadius * animateValue / 2.1f),
+                    startPoint + barWidth, barBottomPoint)
 
+            canvas.drawRect(barRect, barPaint)
+            //draw BarRadiusLeft
+            val barLeftRadiusRect = RectF(startPoint, barBottomPoint - barHeight,
+                    startPoint + barRadius, barBottomPoint - barHeight + (barRadius * animateValue))
+            canvas.drawArc(barLeftRadiusRect, 180f, 90f, true, barPaint)
+
+            //draw barRadiusRight
+            val barRightRadiusRect = RectF(startPoint + barWidth - barRadius, barBottomPoint - barHeight,
+                    startPoint + barWidth, barBottomPoint - barHeight + (barRadius * animateValue))
+            canvas.drawArc(barRightRadiusRect, 270f, 90f, true, barPaint)
+
+            //draw barTopRect
+            val barTopRect = RectF(startPoint + barRadius / 2.1f, barBottomPoint - barHeight,
+                    startPoint + barWidth - barRadius / 2.1f, barBottomPoint - barHeight + (barRadius * animateValue / 2))
+            canvas.drawRect(barTopRect, barPaint)
+            //draw ValueText (on top text)
             val valueTextPaint = Paint()
             valueTextPaint.style = Paint.Style.FILL
             valueTextPaint.color = valueTextColor

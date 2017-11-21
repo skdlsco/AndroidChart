@@ -143,6 +143,11 @@ class PieChartView : View {
         return super.animate()
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        animate()
+    }
+
     enum class AnimateType {
         AnimateType1, AnimateType2
     }

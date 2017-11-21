@@ -52,7 +52,7 @@ class BarChartView : View {
         barBottomPoint = height - (paddingBottom + bottomTextSize + underLineWidth + bottomTextSize * 1.7f)
 
         if (barMaxHeight == 0f)
-            barMaxHeight = barBottomPoint - paddingTop * 2.5f
+            barMaxHeight = barBottomPoint - paddingTop - valueTextSize * 2
 
         if (barRadius >= barWidth)
             barRadius = barWidth
@@ -102,7 +102,7 @@ class BarChartView : View {
 
             val valueTextStart = startPoint + (barWidth / 2) - (valueTextBounds.width() / 1.9f)
 //            canvas.drawText("" + bar.value + "회", valueTextStart, barBottomPoint - valueTextBounds.height() * 1.7f, valueTextPaint)
-            canvas.drawText("" + bar.value, valueTextStart, barBottomPoint - valueTextBounds.height() * 1.1f - barHeight - underLineWidth, valueTextPaint)
+            canvas.drawText("" + bar.value, valueTextStart, barBottomPoint - valueTextBounds.height() * 0.5f - barHeight - underLineWidth, valueTextPaint)
 
             val bottomTextPaint = Paint()
             bottomTextPaint.style = Paint.Style.FILL
@@ -170,6 +170,11 @@ class BarChartView : View {
         }
         animator.start()
         return super.animate()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        animate()
     }
 
     class Elements(var value: Int, var bottomText: String)

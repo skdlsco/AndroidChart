@@ -17,10 +17,16 @@ class MainActivity : AppCompatActivity() {
         val pieChartElement: ArrayList<PieChartView.Element> = ArrayList()
         btn.setOnClickListener {
             barChart.animate()
-            pieChart.animate()
-            myView.animate()
         }
 
+        btn1.setOnClickListener {
+            pieChart.animateType = PieChartView.AnimateType.AnimateType1
+            pieChart.animate()
+        }
+        btn2.setOnClickListener {
+            pieChart.animateType = PieChartView.AnimateType.AnimateType2
+            pieChart.animate()
+        }
         pieChartElement.add(PieChartView.Element(Color.RED, 40.0f))
         pieChartElement.add(PieChartView.Element(Color.BLUE, 15.0f))
         pieChartElement.add(PieChartView.Element(Color.BLACK, 20.0f))

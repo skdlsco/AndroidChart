@@ -135,7 +135,7 @@ class PieChartView : View {
                 animator.duration = 1000
                 animator.addUpdateListener {
                     animateValue = it.animatedValue as Float
-                    invalidate()
+                    postInvalidate()
                 }
                 animator.start()
             }

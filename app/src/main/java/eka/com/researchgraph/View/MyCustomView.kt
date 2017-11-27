@@ -17,25 +17,27 @@ import android.view.ViewPropertyAnimator
  */
 class MyCustomView : View {
     var squareWidth = 0
+    var squareMaxWidth = 500
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        squareWidth = paddingRight
+        squareWidth = width + paddingLeft
     }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         val rectPaint = Paint(Color.BLUE)
-        val rect = Rect(paddingLeft, paddingTop, squareWidth , height - paddingBottom)
+        val rect = Rect(paddingLeft, paddingTop, squareWidth - paddingRight, height - paddingBottom)
         canvas?.drawRect(rect, rectPaint)
     }
 
     override fun animate(): ViewPropertyAnimator {
-        val animator = ValueAnimator.ofInt(paddingLeft, width - paddingRight)
+        val animator = ValueAnimator.ofInt(paddingLeft, width)
         animator.duration = 2000
         animator.addUpdateListener {
             squareWidth = it.animatedValue as Int

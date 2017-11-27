@@ -1,5 +1,6 @@
 package eka.com.researchgraph.View
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -27,7 +28,7 @@ class BarChartView : View {
     var bottomTextSize: Float = 0f
     private var startPoint = 0f
     private var barBottomPoint = 0f
-    private var animateValue = 0f
+    private var animateValue = 1f
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
@@ -58,18 +59,18 @@ class BarChartView : View {
             barRadius = barWidth
 
         val underLine = RectF(paddingStart.toFloat(), barBottomPoint, width.toFloat() - paddingEnd, barBottomPoint + underLineWidth)
-        val underLinePaint = Paint()
-        underLinePaint.style = Paint.Style.FILL
-        underLinePaint.color = underLineColor
-
+        val underLinePaint = Paint().apply {
+            style = Paint.Style.FILL
+            color = underLineColor
+        }
         canvas!!.drawRect(underLine, underLinePaint)
 
         for (bar in elements) {
             val barHeight = barMaxHeight * (bar.value.toFloat() / maxOfValue.toFloat()) * animateValue
-            val barPaint = Paint()
-
-            barPaint.style = Paint.Style.FILL
-            barPaint.color = barColor
+            val barPaint = Paint().apply {
+                style = Paint.Style.FILL
+                color = barColor
+            }
             //draw Bar
             val barRect = RectF(startPoint, barBottomPoint - barHeight + (barRadius * animateValue / 2.1f),
                     startPoint + barWidth, barBottomPoint)
@@ -90,12 +91,12 @@ class BarChartView : View {
                     startPoint + barWidth - barRadius / 2.1f, barBottomPoint - barHeight + (barRadius * animateValue / 2))
             canvas.drawRect(barTopRect, barPaint)
             //draw ValueText (on top text)
-            val valueTextPaint = Paint()
-            valueTextPaint.style = Paint.Style.FILL
-            valueTextPaint.color = valueTextColor
-            valueTextPaint.textSize = valueTextSize
-            valueTextPaint.typeface = Typeface.createFromAsset(resources.assets, "fonts/nanum_barun_gothic_bold.ttf")
-
+            val valueTextPaint = Paint().apply {
+                typeface = Typeface.createFromAsset(resources.assets, "fonts/nanum_barun_gothic_bold.ttf")
+                color = valueTextColor
+                style = Paint.Style.FILL
+                textSize = valueTextSize
+            }
 
             val valueTextBounds = Rect()
             valueTextPaint.getTextBounds("" + bar.value, 0, ("" + bar.value).length, valueTextBounds)
@@ -104,11 +105,12 @@ class BarChartView : View {
 //            canvas.drawText("" + bar.value + "회", valueTextStart, barBottomPoint - valueTextBounds.height() * 1.7f, valueTextPaint)
             canvas.drawText("" + bar.value, valueTextStart, barBottomPoint - valueTextBounds.height() * 0.5f - barHeight - underLineWidth, valueTextPaint)
 
-            val bottomTextPaint = Paint()
-            bottomTextPaint.style = Paint.Style.FILL
-            bottomTextPaint.color = bottomTextColor
-            bottomTextPaint.textSize = bottomTextSize
-            bottomTextPaint.typeface = Typeface.createFromAsset(resources.assets, "fonts/nanum_barun_gothic_bold.ttf")
+            val bottomTextPaint = Paint().apply {
+                style = Paint.Style.FILL
+                color = bottomTextColor
+                textSize = bottomTextSize
+                typeface = Typeface.createFromAsset(resources.assets, "fonts/nanum_barun_gothic_bold.ttf")
+            }
 
             val bottomTextBounds = Rect()
             bottomTextPaint.getTextBounds(bar.bottomText, 0, bar.bottomText.length, bottomTextBounds)
@@ -162,11 +164,12 @@ class BarChartView : View {
     }
 
     override fun animate(): ViewPropertyAnimator {
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.duration = 1000
-        animator.addUpdateListener {
-            animateValue = it.animatedValue as Float
-            invalidate()
+        val animator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 1000
+            addUpdateListener {
+                animateValue = it.animatedValue as Float
+                postInvalidate()
+            }
         }
         animator.start()
         return super.animate()

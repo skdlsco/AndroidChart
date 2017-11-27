@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#aaa"
+    android:background="#fff"
     android:orientation="vertical"
     tools:context="eka.com.researchgraph.MainActivity">
 
@@ -13,34 +13,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <eka.com.researchgraph.View.MyCustomView
-        android:id="@+id/myView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:padding="10dp" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn1"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
 
-    <eka.com.researchgraph.View.BarChartView
-        android:id="@+id/barChart"
+        <Button
+            android:layout_weight="1"
+            android:id="@+id/btn2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        app:barColor="#000"
-        app:barDistance="8dp"
-        app:barMaxHeight="80dp"
-        app:barRadius="10dp"
-        app:barWidth="30dp"
-        app:underLineColor="#000" />
+        android:layout_height="wrap_content">
+
+        <eka.com.researchgraph.View.BarChartView
+            android:id="@+id/barChart"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:barColor="#D3C9C9"
+            app:barDistance="8dp"
+            app:barRadius="5dp"
+            app:barWidth="45dp"
+            app:underLineColor="#000"
+            app:valueTextColor="#000" />
+    </HorizontalScrollView>
 
     <eka.com.researchgraph.View.PieChartView
         android:id="@+id/pieChart"
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:innerCircleColor="#aaa"
+        android:layout_marginTop="20dp"
+        app:innerCircleColor="#fff"
         app:innerCircleRadius="35dp"
         app:outerCircleRadius="75dp" />
 </LinearLayout>

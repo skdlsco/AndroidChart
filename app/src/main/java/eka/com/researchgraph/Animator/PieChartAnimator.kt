@@ -42,10 +42,6 @@ class PieChartAnimator(private var pieChart: PieChartView, var duration: Long) :
         pieChart.setChartAnimateValue(animator.animatedValue as Float, true)
     }
 
-    override fun setAnimatorListener(animationListener: ChartAnimationListener) {
-        this.animationListener = animationListener
-    }
-
     override fun isAnimationStart(): Boolean = animator.isStarted
 
 

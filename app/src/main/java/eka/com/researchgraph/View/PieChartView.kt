@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.View
 import eka.com.researchgraph.*
 import eka.com.researchgraph.Animator.PieChartAnimator
+import eka.com.researchgraph.Data.PieChartData
 import eka.com.researchgraph.Renderer.PieChartRenderer
 
 class PieChartView : View, PieChartDataProvider {

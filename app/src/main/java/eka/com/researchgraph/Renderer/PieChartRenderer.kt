@@ -72,7 +72,9 @@ class PieChartRenderer(private var pieChartDataProvider: PieChartDataProvider) {
                             canvas.drawArc(outerCircle, startAngle, (sweepAngle + 0.1f), true, outerPaint)
                         } else {
                             if ((sweepAngle) * (animateValue - (startAngle - 270f)) / sweepAngle > 0f)
-                                canvas.drawArc(outerCircle, startAngle, (sweepAngle + 0.1f) * (animateValue - (startAngle - 270f)) / sweepAngle, true, outerPaint)
+                                canvas.drawArc(outerCircle, startAngle,
+                                        (sweepAngle + 0.1f) * (animateValue - (startAngle - 270f)) / sweepAngle,
+                                        true, outerPaint)
                         }
                         startAngle += sweepAngle
                     }

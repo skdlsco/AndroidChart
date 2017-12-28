@@ -30,21 +30,22 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <!--<HorizontalScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <!--<eka.com.researchgraph.View.BarChartView-->
-            <!--android:id="@+id/barChart"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="200dp"-->
-            <!--app:barColor="#D3C9C9"-->
-            <!--app:barDistance="8dp"-->
-            <!--app:barRadius="5dp"-->
-            <!--app:barWidth="45dp"-->
-            <!--app:underLineColor="#000"-->
-            <!--app:valueTextColor="#000" />-->
-    <!--</HorizontalScrollView>-->
+        <eka.com.researchgraph.View.BarChartView
+            android:id="@+id/barChart"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            app:barColor="#D3C9C9"
+            app:barDistance="8dp"
+            app:barRadius="5dp"
+            app:barWidth="45dp"
+            app:barMaxHeight="100dp"
+            app:underLineColor="#000"
+            app:valueTextColor="#000" />
+    </HorizontalScrollView>
 
     <eka.com.researchgraph.View.PieChartView
         android:id="@+id/pieChart"

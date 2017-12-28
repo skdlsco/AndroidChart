@@ -1,34 +1,24 @@
 package eka.com.researchgraph.View
 
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.*
+import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
-import android.view.ViewPropertyAnimator
+import eka.com.researchgraph.Animator.BarChartAnimator
+import eka.com.researchgraph.BarChartDataProvider
+import eka.com.researchgraph.Data.BarChartData
 import eka.com.researchgraph.R
+import eka.com.researchgraph.Renderer.BarChartRenderer
 
-class BarChartView : View {
-    var elements: ArrayList<Elements> = ArrayList()
-    var barWidth: Float = 0f
-    var barMaxHeight: Float = 0f
-    var barColor: Int = Color.BLACK
-    var barRadius: Float = 0f
-    var maxOfValue: Int = 0
-    var barDistance: Float = 0f
-    var underLineColor: Int = Color.WHITE
-    var underLineWidth: Float = 0f
-    var valueTextSize: Float = 0f
-    var valueTextColor: Int = Color.WHITE
-    var bottomTextColor: Int = Color.WHITE
-    var bottomTextSize: Float = 0f
-    private var startPoint = 0f
-    private var barBottomPoint = 0f
-    private var animateValue = 1f
+class BarChartView : View, BarChartDataProvider {
+
+
+    var chartData = BarChartData()
+    var animator = BarChartAnimator(this)
+    lateinit var chartRenderer: BarChartRenderer
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
@@ -40,86 +30,26 @@ class BarChartView : View {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        setMeasuredDimension((paddingStart + paddingEnd + elements.size * (barWidth + barDistance)).toInt(), heightMeasureSpec)
+        setMeasuredDimension((paddingStart + paddingEnd + chartData.barChartValues.size * (chartData.barWidth + chartData.barDistance)).toInt(),
+                heightMeasureSpec)
+
+        initChartData()
+        chartRenderer = BarChartRenderer(this, context)
+    }
+
+    fun setChartAnimationValue(value: Float, isAnimated: Boolean) {
+        if (isAnimated) {
+            chartRenderer.animateValue = value
+        } else {
+            chartRenderer.animateValue = 1f
+        }
+        ViewCompat.postInvalidateOnAnimation(this)
     }
 
     @SuppressLint("DrawAllocation")
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
-        startPoint = paddingStart + (barDistance / 2)
-        setMaxOfValue()
-
-        barBottomPoint = height - (paddingBottom + bottomTextSize + underLineWidth + bottomTextSize * 1.7f)
-
-        if (barMaxHeight == 0f)
-            barMaxHeight = barBottomPoint - paddingTop - valueTextSize * 2
-
-        if (barRadius >= barWidth)
-            barRadius = barWidth
-
-        val underLine = RectF(paddingStart.toFloat(), barBottomPoint, width.toFloat() - paddingEnd, barBottomPoint + underLineWidth)
-        val underLinePaint = Paint().apply {
-            style = Paint.Style.FILL
-            color = underLineColor
-        }
-        canvas!!.drawRect(underLine, underLinePaint)
-
-        for (bar in elements) {
-            val barHeight = barMaxHeight * (bar.value.toFloat() / maxOfValue.toFloat()) * animateValue
-            val barPaint = Paint().apply {
-                style = Paint.Style.FILL
-                color = barColor
-            }
-            //draw Bar
-            val barRect = RectF(startPoint, barBottomPoint - barHeight + (barRadius * animateValue / 2.1f),
-                    startPoint + barWidth, barBottomPoint)
-
-            canvas.drawRect(barRect, barPaint)
-            //draw BarRadiusLeft
-            val barLeftRadiusRect = RectF(startPoint, barBottomPoint - barHeight,
-                    startPoint + barRadius, barBottomPoint - barHeight + (barRadius * animateValue))
-            canvas.drawArc(barLeftRadiusRect, 180f, 90f, true, barPaint)
-
-            //draw barRadiusRight
-            val barRightRadiusRect = RectF(startPoint + barWidth - barRadius, barBottomPoint - barHeight,
-                    startPoint + barWidth, barBottomPoint - barHeight + (barRadius * animateValue))
-            canvas.drawArc(barRightRadiusRect, 270f, 90f, true, barPaint)
-
-            //draw barTopRect
-            val barTopRect = RectF(startPoint + barRadius / 2.1f, barBottomPoint - barHeight,
-                    startPoint + barWidth - barRadius / 2.1f, barBottomPoint - barHeight + (barRadius * animateValue / 2))
-            canvas.drawRect(barTopRect, barPaint)
-            //draw ValueText (on top text)
-            val valueTextPaint = Paint().apply {
-                typeface = Typeface.createFromAsset(resources.assets, "fonts/nanum_barun_gothic_bold.ttf")
-                color = valueTextColor
-                style = Paint.Style.FILL
-                textSize = valueTextSize
-            }
-
-            val valueTextBounds = Rect()
-            valueTextPaint.getTextBounds("" + bar.value, 0, ("" + bar.value).length, valueTextBounds)
-
-            val valueTextStart = startPoint + (barWidth / 2) - (valueTextBounds.width() / 1.9f)
-//            canvas.drawText("" + bar.value + "회", valueTextStart, barBottomPoint - valueTextBounds.height() * 1.7f, valueTextPaint)
-            canvas.drawText("" + bar.value, valueTextStart, barBottomPoint - valueTextBounds.height() * 0.5f - barHeight - underLineWidth, valueTextPaint)
-
-            val bottomTextPaint = Paint().apply {
-                style = Paint.Style.FILL
-                color = bottomTextColor
-                textSize = bottomTextSize
-                typeface = Typeface.createFromAsset(resources.assets, "fonts/nanum_barun_gothic_bold.ttf")
-            }
-
-            val bottomTextBounds = Rect()
-            bottomTextPaint.getTextBounds(bar.bottomText, 0, bar.bottomText.length, bottomTextBounds)
-
-            val bottomTextStart = startPoint + (barWidth / 2) - (bottomTextBounds.width() / 1.9f)
-            canvas.drawText(bar.bottomText, bottomTextStart, barBottomPoint + bottomTextBounds.height() * 3f, bottomTextPaint)
-
-            startPoint += barWidth + barDistance
-        }
+        chartRenderer.draw(canvas)
     }
 
     private fun getAttrs(attrs: AttributeSet, defStyleAttr: Int) {
@@ -134,51 +64,45 @@ class BarChartView : View {
 
     private fun setTypeArray(typedArray: TypedArray) {
 
-        barWidth = typedArray.getDimension(R.styleable.BarChartView_barWidth, 100f)
-        barColor = typedArray.getColor(R.styleable.BarChartView_barColor, Color.WHITE)
-        barDistance = typedArray.getDimension(R.styleable.BarChartView_barDistance, 20f)
-        barRadius = typedArray.getDimension(R.styleable.BarChartView_barRadius, 0f)
+        chartData.barWidth = typedArray.getDimension(R.styleable.BarChartView_barWidth, 100f)
+        chartData.barColor = typedArray.getColor(R.styleable.BarChartView_barColor, Color.WHITE)
+        chartData.barDistance = typedArray.getDimension(R.styleable.BarChartView_barDistance, 20f)
+        chartData.barRadius = typedArray.getDimension(R.styleable.BarChartView_barRadius, 0f)
 
-        underLineColor = typedArray.getColor(R.styleable.BarChartView_underLineColor, Color.WHITE)
-        underLineWidth = typedArray.getDimension(R.styleable.BarChartView_underLineWidth, 5f)
+        chartData.underLineColor = typedArray.getColor(R.styleable.BarChartView_underLineColor, Color.WHITE)
+        chartData.underLineWidth = typedArray.getDimension(R.styleable.BarChartView_underLineWidth, 5f)
 
-        valueTextColor = typedArray.getColor(R.styleable.BarChartView_valueTextColor, Color.WHITE)
-        valueTextSize = typedArray.getDimension(R.styleable.BarChartView_valueTextSize, 30f)
+        chartData.valueTextColor = typedArray.getColor(R.styleable.BarChartView_valueTextColor, Color.WHITE)
+        chartData.valueTextSize = typedArray.getDimension(R.styleable.BarChartView_valueTextSize, 30f)
 
-        bottomTextColor = typedArray.getColor(R.styleable.BarChartView_bottomTextColor, Color.WHITE)
-        bottomTextSize = typedArray.getDimension(R.styleable.BarChartView_bottomTextSize, 30f)
+        chartData.bottomTextColor = typedArray.getColor(R.styleable.BarChartView_bottomTextColor, Color.WHITE)
+        chartData.bottomTextSize = typedArray.getDimension(R.styleable.BarChartView_bottomTextSize, 30f)
 
-        barMaxHeight = typedArray.getDimension(R.styleable.BarChartView_barMaxHeight, 0f)
+        chartData.barMaxHeight = typedArray.getDimension(R.styleable.BarChartView_barMaxHeight, 0f)
 
         typedArray.recycle()
     }
 
-    private fun setMaxOfValue() {
-        if (elements.isNotEmpty()) {
-            maxOfValue = elements.first().value
-            elements
-                    .asSequence()
-                    .filter { maxOfValue < it.value }
-                    .forEach { maxOfValue = it.value }
+    private fun initChartData(){
+        chartData.paddingTop = paddingTop
+        chartData.paddingBottom = paddingBottom
+        chartData.paddingStart = paddingStart
+        chartData.paddingEnd = paddingEnd
+
+        if(chartData.barMaxHeight == 0f){
         }
     }
+    override fun getBarChartDataProvider(): BarChartData = chartData
 
-    override fun animate(): ViewPropertyAnimator {
-        val animator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 1000
-            addUpdateListener {
-                animateValue = it.animatedValue as Float
-                postInvalidate()
-            }
-        }
-        animator.start()
-        return super.animate()
+    override fun setBarChartDataProvider(barChartData: BarChartData) {
+        this.chartData = barChartData
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        animate()
+    fun startAnimation() {
+        animator.startAnimation()
     }
 
-    class Elements(var value: Int, var bottomText: String)
+    fun cancelAnimation() {
+        animator.cancelAnimation()
+    }
 }

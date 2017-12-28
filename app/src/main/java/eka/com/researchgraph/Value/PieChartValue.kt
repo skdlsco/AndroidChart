@@ -1,4 +1,4 @@
-package eka.com.researchgraph
+package eka.com.researchgraph.Value
 
 /**
  * Created by eka on 2017. 11. 27..

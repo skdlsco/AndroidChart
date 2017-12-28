@@ -8,7 +8,6 @@ import eka.com.researchgraph.Listener.ChartAnimationListener
 interface ChartAnimator {
     fun startAnimation()
     fun cancelAnimation()
-    fun setAnimatorListener(animationListener: ChartAnimationListener)
     fun isAnimationStart(): Boolean
 
     companion object {

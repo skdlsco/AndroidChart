@@ -1,6 +1,7 @@
-package eka.com.researchgraph
+package eka.com.researchgraph.Data
 
 import android.graphics.Color
+import eka.com.researchgraph.Value.PieChartValue
 
 /**
  * Created by eka on 2017. 11. 27..
